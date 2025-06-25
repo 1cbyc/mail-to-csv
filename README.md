@@ -1,6 +1,32 @@
-# Gmail Sent Emails to CSV Exporter
+# mail-to-csv
 
-A fast and efficient Python script to export sent Gmail emails to CSV format using the Gmail API, with advanced wallet data extraction capabilities.
+Export Gmail (API) and Yahoo (IMAP) mail to CSV, then extract structured wallet fields (Phrase, Keystore, Keystore Pass, Private Key) into a second CSV.
+
+## Quick start
+
+```bash
+pip install -r requirements.txt
+cp .env.example .env    # add YAHOO_USERNAME, YAHOO_APP_PASSWORD, etc.
+# Place credentials.json in project root for Gmail
+
+make gmail              # -> data/gmail_sent.csv
+make extract            # -> data/wallet_data.csv
+make yahoo              # -> data/yahoo_inbox.csv
+```
+
+See [WORKFLOW.md](WORKFLOW.md) for the full pipeline and what to run next.
+
+## Project layout
+
+| Path | Purpose |
+|------|---------|
+| `gmail_to_csv.py` | Gmail OAuth export |
+| `yahoo_to_csv.py` | Yahoo IMAP export |
+| `extract_wallet_data.py` | Parse wallet fields from email bodies |
+| `mail_to_csv_env.py` | `.env` loading and `data/` paths |
+| `data/` | Default CSV output (gitignored except `.gitkeep`) |
+| `.env.example` | Required environment variables |
+| `Makefile` | `make gmail`, `yahoo`, `extract`, `wallet-pipeline` |
 
 ## Features
 
@@ -304,18 +330,26 @@ abc123def456,"New message from Example wallet app","Example wallet app <sender@e
 def456abc789,"New message from Another example app","Another example app <sender@example.com>",2025-06-20 02:57:49,,REDACTED,REDACTED,
 ```
 
-## Files in This Project
+## Environment variables
 
-- `gmail_to_csv.py` - Main Gmail export script
-- `extract_wallet_data.py` - Wallet data extraction script
-- `setup.py` - Automated setup script
-- `fix_oauth.py` - OAuth troubleshooting helper
-- `yahoo_to_csv.py` - Yahoo Mail IMAP exporter
-- `scripts/release.sh` - Build local release archive from a git tag
-- `requirements.txt` - Python dependencies
-- `CHANGELOG.md` - Version history
-- `README.md` - This documentation
-- `TROUBLESHOOTING.md` - Detailed troubleshooting guide
+Copy `.env.example` to `.env`. Main variables:
+
+| Variable | Used by | Description |
+|----------|---------|-------------|
+| `YAHOO_USERNAME` | Yahoo | Yahoo email address |
+| `YAHOO_APP_PASSWORD` | Yahoo | Yahoo app password (not account password) |
+| `YAHOO_MAILBOX` | Yahoo | e.g. `INBOX`, `[Yahoo]/Sent` |
+| `YAHOO_PHRASE` | Yahoo | Optional body/subject filter |
+| `GMAIL_CREDENTIALS` | Gmail | Path to OAuth client JSON |
+| `GMAIL_TOKEN` | Gmail | Saved OAuth token file |
+| `GMAIL_QUERY` | Gmail | Gmail search query |
+| `OUTPUT_DIR` | All | Output directory (default: `data`) |
+
+## More docs
+
+- [WORKFLOW.md](WORKFLOW.md) - Step-by-step pipeline and next tasks
+- [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - OAuth and API issues
+- [CHANGELOG.md](CHANGELOG.md) - Version history
 
 ## License
 

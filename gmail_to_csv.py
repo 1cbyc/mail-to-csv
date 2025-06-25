@@ -15,6 +15,8 @@ from typing import List, Dict, Optional
 import argparse
 import json
 
+from mail_to_csv_env import load_env, ensure_data_dir, env_path, DATA_DIR
+
 try:
     from google.auth.transport.requests import Request
     from google.oauth2.credentials import Credentials
@@ -308,20 +310,32 @@ class GmailExporter:
             return False
 
 def main():
+    load_env()
+    ensure_data_dir()
+    default_output = str(DATA_DIR / os.getenv('GMAIL_EXPORT_CSV', 'gmail_sent.csv'))
+    default_query = os.getenv('GMAIL_QUERY', 'in:sent')
+
     parser = argparse.ArgumentParser(description='Export sent Gmail emails to CSV')
-    parser.add_argument('--credentials', default='credentials.json', help='Path to credentials.json file')
-    parser.add_argument('--output', default='sent_emails.csv', help='Output CSV file path')
+    parser.add_argument(
+        '--credentials',
+        default=str(env_path('GMAIL_CREDENTIALS', 'credentials.json')),
+        help='Path to credentials.json (or GMAIL_CREDENTIALS)',
+    )
+    parser.add_argument('--token', default=str(env_path('GMAIL_TOKEN', 'token.json')), help='OAuth token file (or GMAIL_TOKEN)')
+    parser.add_argument('--output', default=default_output, help='Output CSV file path')
     parser.add_argument('--max-results', type=int, default=1000, help='Maximum number of emails to export')
-    parser.add_argument('--query', help='Gmail search query (default: in:sent)')
+    parser.add_argument('--query', default=None, help=f'Gmail search query (default: {default_query})')
     parser.add_argument('--no-incremental', action='store_true', help='Disable incremental CSV writing')
     
     args = parser.parse_args()
+    if not args.query:
+        args.query = default_query
     
     print("Gmail Sent Emails to CSV Exporter")
     print("=" * 40)
     
     # Initialize exporter
-    exporter = GmailExporter(credentials_file=args.credentials)
+    exporter = GmailExporter(credentials_file=args.credentials, token_file=args.token)
     
     # Authenticate
     print("Authenticating with Gmail API...")

@@ -86,10 +86,15 @@ def main():
         print("- Desktop applications don't need a store ID")
     
     print("\nSetup complete!")
+    if not os.path.exists(".env") and os.path.exists(".env.example"):
+        print("\nCopy .env.example to .env and add your Yahoo / path settings:")
+        print("  cp .env.example .env")
+
     print("\nNext steps:")
-    print("1. Ensure credentials.json is in this directory")
-    print("2. Run: python gmail_to_csv.py")
-    print("3. Follow the authentication prompts")
+    print("1. Fill in .env (see .env.example)")
+    print("2. Place credentials.json in this directory for Gmail")
+    print("3. Run: make gmail   or   python gmail_to_csv.py")
+    print("4. See WORKFLOW.md for the full pipeline")
 
 if __name__ == "__main__":
     main() 
