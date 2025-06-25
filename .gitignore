@@ -2,10 +2,12 @@
 credentials.json
 token.json
 .env
-.env.*
+.env.local
+!.env.example
 
 # Local data exports (may contain sensitive wallet fields)
-data/
+data/*
+!data/.gitkeep
 data1/
 data2/
 *.csv

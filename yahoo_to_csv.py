@@ -22,6 +22,8 @@ from typing import List, Dict, Optional, Tuple
 from datetime import datetime
 import time
 
+from mail_to_csv_env import load_env, ensure_data_dir, DATA_DIR
+
 IMAP_HOST = 'imap.mail.yahoo.com'
 IMAP_PORT = 993
 
@@ -353,19 +355,29 @@ class YahooExporter:
         return count
 
 def main():
+    load_env()
+    ensure_data_dir()
+    default_output = str(DATA_DIR / os.getenv('YAHOO_EXPORT_CSV', 'yahoo_inbox.csv'))
+    default_mailbox = os.getenv('YAHOO_MAILBOX', 'INBOX')
+    default_phrase = os.getenv('YAHOO_PHRASE')
+
     parser = argparse.ArgumentParser(description='Export Yahoo emails to CSV via IMAP')
-    parser.add_argument('--username', required=True, help='Yahoo email address (username)')
-    parser.add_argument('--password', help='Yahoo App Password (or set YAHOO_APP_PASSWORD env)')
-    parser.add_argument('--mailbox', help='Mailbox name (e.g., "INBOX", "[Yahoo]/Sent")')
-    parser.add_argument('--output', default='yahoo_emails.csv', help='Output CSV file path')
+    parser.add_argument('--username', default=os.getenv('YAHOO_USERNAME'), help='Yahoo address (or YAHOO_USERNAME)')
+    parser.add_argument('--password', help='Yahoo App Password (or YAHOO_APP_PASSWORD)')
+    parser.add_argument('--mailbox', default=default_mailbox, help='Mailbox (or YAHOO_MAILBOX)')
+    parser.add_argument('--output', default=default_output, help='Output CSV file path')
     parser.add_argument('--max-results', type=int, help='Maximum number of emails to export (default: all)')
-    parser.add_argument('--query', help='Phrase to search for within messages (uses IMAP TEXT search)')
+    parser.add_argument('--query', default=default_phrase, help='Phrase filter (or YAHOO_PHRASE)')
 
     args = parser.parse_args()
 
+    if not args.username:
+        print('Missing Yahoo username. Pass --username or set YAHOO_USERNAME in .env')
+        return
+
     password = args.password or os.getenv('YAHOO_APP_PASSWORD')
     if not password:
-        print('Missing Yahoo App Password. Pass --password or set YAHOO_APP_PASSWORD.')
+        print('Missing Yahoo App Password. Pass --password or set YAHOO_APP_PASSWORD in .env')
         return
 
     print('Yahoo Emails to CSV Exporter')

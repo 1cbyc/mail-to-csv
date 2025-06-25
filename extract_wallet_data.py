@@ -9,7 +9,10 @@ It looks for specific fields like Phrase, Keystore, Keystore Pass, and Private K
 import csv
 import re
 import argparse
+import os
 from typing import Dict, List, Optional
+
+from mail_to_csv_env import load_env, ensure_data_dir, DATA_DIR
 
 def extract_wallet_data(text: str) -> Dict[str, str]:
     """
@@ -305,9 +308,14 @@ def analyze_csv_structure(input_file: str) -> None:
         print(f"Error analyzing file: {e}")
 
 def main():
+    load_env()
+    ensure_data_dir()
+    default_input = str(DATA_DIR / os.getenv('GMAIL_EXPORT_CSV', 'gmail_sent.csv'))
+    default_output = str(DATA_DIR / os.getenv('WALLET_EXPORT_CSV', 'wallet_data.csv'))
+
     parser = argparse.ArgumentParser(description='Extract wallet data from Gmail CSV exports')
-    parser.add_argument('input', help='Input CSV file path')
-    parser.add_argument('--output', '-o', default='wallet_data.csv', help='Output CSV file path (default: wallet_data.csv)')
+    parser.add_argument('input', nargs='?', default=default_input, help='Input CSV file path')
+    parser.add_argument('--output', '-o', default=default_output, help='Output CSV file path')
     parser.add_argument('--analyze', '-a', action='store_true', help='Analyze CSV structure without extracting')
     
     args = parser.parse_args()
