@@ -5,11 +5,13 @@ token.json
 .env.local
 !.env.example
 
-# Local data exports (may contain sensitive wallet fields)
+# Per-account dirs: credentials.json, token.json, CSVs (never commit)
 data/*
 !data/.gitkeep
 data1/
 data2/
+data2-*/
+data3/
 *.csv
 
 # Local release artifacts (regenerate with scripts/release.sh)
@@ -39,6 +41,7 @@ wheels/
 MANIFEST
 
 # Virtual environments
+.venv/
 venv/
 env/
 ENV/
@@ -63,3 +66,4 @@ Thumbs.db
 
 # Logs
 *.log 
+*.md
