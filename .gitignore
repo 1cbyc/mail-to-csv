@@ -14,8 +14,11 @@ data2-*/
 data3/
 *.csv
 
-# Local release artifacts (regenerate with scripts/release.sh)
+# Local release artifacts (regenerate with: python scripts/cli.py release)
 releases/
+
+# Local-only tooling
+scripts/backfill_contribution_gaps.py
 
 # Python
 __pycache__/
@@ -65,5 +68,4 @@ ehthumbs.db
 Thumbs.db
 
 # Logs
-*.log 
-*.md
+*.log

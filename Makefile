@@ -1,4 +1,7 @@
-.PHONY: setup env gmail yahoo extract wallet-pipeline clean
+.PHONY: bootstrap setup env gmail yahoo extract wallet-pipeline clean
+
+bootstrap:
+	python3 scripts/cli.py bootstrap
 
 setup:
 	python3 setup.py
@@ -23,4 +26,4 @@ clean:
 	@echo "Removed Python cache. CSV files in data/ are kept."
 
 release:
-	./scripts/release.sh $(TAG)
+	python3 scripts/cli.py release $(TAG)

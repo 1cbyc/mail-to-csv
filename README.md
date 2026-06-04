@@ -5,7 +5,7 @@ Export Gmail (API) and Yahoo (IMAP) mail to CSV, then extract structured wallet 
 ## Quick start
 
 ```bash
-pip install -r requirements.txt
+python3 scripts/cli.py bootstrap   # or: pip install -r requirements.txt
 cp .env.example .env    # add YAHOO_USERNAME, YAHOO_APP_PASSWORD, etc.
 # Place credentials.json in project root for Gmail
 
@@ -26,6 +26,7 @@ See [WORKFLOW.md](WORKFLOW.md) for the full pipeline and what to run next.
 | `mail_to_csv_env.py` | `.env` loading and `data/` paths |
 | `data/` | Default CSV output (gitignored except `.gitkeep`) |
 | `.env.example` | Required environment variables |
+| `scripts/cli.py` | `bootstrap`, `gmail <folder>`, `package`, `release` |
 | `Makefile` | `make gmail`, `yahoo`, `extract`, `wallet-pipeline` |
 
 ## Features
@@ -310,10 +311,10 @@ The wallet data CSV contains extracted fields:
 
 ## Security Notes
 
-- Keep `credentials.json` and `token.json` secure and don't share them
-- The script only requests read-only access to Gmail
-- Tokens are stored locally and can be deleted to revoke access
-- Extracted wallet data should be handled securely
+- **Never commit** `.env`, `credentials.json`, `token.json`, `data*/`, or any `*.csv` (they are gitignored).
+- Keep OAuth files and exports on your machine only; this repo is public.
+- Gmail access is read-only; delete `token.json` to force re-auth.
+- Wallet exports can contain mnemonics and keys — treat CSV output as highly sensitive.
 
 ## Example Output
 
@@ -326,9 +327,9 @@ id,thread_id,subject,from,to,cc,date,snippet,body,labels
 ### Wallet Data Extraction
 ```csv
 email_id,subject,from,date,phrase,keystore,keystore_pass,private_key
-abc123def456,"New message from Example wallet app","Example wallet app <sender@example.com>",2025-06-20 03:02:09,REDACTED,,,
-def456abc789,"New message from Another example app","Another example app <sender@example.com>",2025-06-20 02:57:49,,REDACTED,REDACTED,
+abc123def456,"Wallet backup","sender@example.com",2025-06-20 03:02:09,,,,
 ```
+(Real exports stay in gitignored `data/` folders — never commit CSVs or secrets.)
 
 ## Environment variables
 
