@@ -1,3 +1,5 @@
+> **Licensing update (31 October 2026):** The current policy requires prior written permission for reuse and a separate agreement for AI training. See [LICENSE](LICENSE). Earlier grants remain valid for previously licensed material; [LICENSE.previous](LICENSE.previous) preserves those terms. Any older license descriptions below describe the previous policy. Contact [ei@nsisong.com](mailto:ei@nsisong.com).
+
 # mail-to-csv
 
 Export Gmail (API) and Yahoo (IMAP) mail to CSV, then extract structured wallet fields (Phrase, Keystore, Keystore Pass, Private Key) into a second CSV.
@@ -358,4 +360,4 @@ This project is open source and available under the MIT License.
 
 ## Contributing
 
-Feel free to submit issues and enhancement requests! 
+Feel free to submit issues and enhancement requests!
